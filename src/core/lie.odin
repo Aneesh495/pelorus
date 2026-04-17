@@ -95,7 +95,7 @@ so3_log_mat3 :: proc "contextless" (r: Mat3) -> Vec3 {
 		return so3_vee(r)
 	}
 
-	scale := theta / (2.0 * math.sin(theta))
+	scale := theta / math.sin(theta)
 	v := so3_vee(r)
 	return Vec3{v.x * scale, v.y * scale, v.z * scale}
 }
