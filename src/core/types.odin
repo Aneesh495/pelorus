@@ -282,6 +282,36 @@ mat3_identity :: proc "contextless" () -> Mat3 {
 	}
 }
 
+mat3_scale :: proc "contextless" (m: Mat3, s: f32) -> Mat3 {
+	res := m
+	for r in 0 ..< 3 {
+		for c in 0 ..< 3 {
+			res[r, c] *= s
+		}
+	}
+	return res
+}
+
+mat3_add :: proc "contextless" (a, b: Mat3) -> Mat3 {
+	res: Mat3
+	for r in 0 ..< 3 {
+		for c in 0 ..< 3 {
+			res[r, c] = a[r, c] + b[r, c]
+		}
+	}
+	return res
+}
+
+mat3_sub :: proc "contextless" (a, b: Mat3) -> Mat3 {
+	res: Mat3
+	for r in 0 ..< 3 {
+		for c in 0 ..< 3 {
+			res[r, c] = a[r, c] - b[r, c]
+		}
+	}
+	return res
+}
+
 mat4_identity :: proc "contextless" () -> Mat4 {
 	return Mat4{
 		1, 0, 0, 0,
