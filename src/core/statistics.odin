@@ -117,7 +117,7 @@ mahalanobis_distance_sq_3d :: proc "contextless" (x, mu: Vec3, cov: Mat3) -> f32
 //
 // Compute sample mean and 3x3 covariance matrix over a point slice.
 //
-compute_mean_covariance_3d :: proc(points: []Vec3) -> (mean: Vec3, cov: Mat3) {
+compute_mean_covariance_3d :: proc "contextless" (points: []Vec3) -> (mean: Vec3, cov: Mat3) {
 	n := len(points)
 	if n == 0 {
 		return vec3_zero(), mat3_identity()
