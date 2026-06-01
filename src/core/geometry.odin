@@ -389,6 +389,27 @@ obb_intersects_obb :: proc "contextless" (a, b: OBB) -> bool {
 }
 
 //
+// Spatial hash cell for local neighborhood queries.
+//
+SpatialNeighborCell :: struct {
+	key:         u64,
+	point_index: int,
+	next_in_bin: int,
+	occupied:    bool,
+}
+
+//
+// SplitMix64 integer hash for combining 3D discrete grid coordinates (gx, gy, gz) into 64-bit key.
+//
+voxel_hash_coords :: proc "contextless" (gx, gy, gz: i32) -> u64 {
+	h := u64(u32(gx)) * 73856093 ~ u64(u32(gy)) * 19349663 ~ u64(u32(gz)) * 83492791
+	h = (h ~ (h >> 30)) * 0xbf58476d1ce4e5b9
+	h = (h ~ (h >> 27)) * 0x94d049bb133111eb
+	h = h ~ (h >> 31)
+	return h | 1 // Guarantee non-zero key
+}
+
+//
 // Closest distance between two line segments (used in capsule collision queries).
 // Returns squared distance between segment S1 (p1 to q1) and S2 (p2 to q2).
 //
