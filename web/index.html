@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PELORUS: Real-Time Spatial Perception Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="container">
+    <canvas id="viewport"></canvas>
+
+    <header class="hud-header">
+      <div class="brand">
+        <span class="logo">PELORUS</span>
+        <span class="badge">ARM64 CONTINUOUS-TIME</span>
+      </div>
+      <div class="system-status">
+        <span class="status-dot online"></span>
+        <span id="conn-status">CONNECTED (127.0.0.1:8080)</span>
+      </div>
+    </header>
+
+    <aside class="hud-panel left">
+      <div class="card">
+        <h3>State Estimation (SE3)</h3>
+        <div class="stat-row"><span class="lbl">Pos X:</span><span id="pos-x" class="val">0.000 m</span></div>
+        <div class="stat-row"><span class="lbl">Pos Y:</span><span id="pos-y" class="val">0.000 m</span></div>
+        <div class="stat-row"><span class="lbl">Pos Z:</span><span id="pos-z" class="val">0.000 m</span></div>
+        <div class="stat-row"><span class="lbl">Speed:</span><span id="speed" class="val">0.00 m/s</span></div>
+        <div class="stat-row"><span class="lbl">Heading:</span><span id="yaw" class="val">0.0 deg</span></div>
+      </div>
+
+      <div class="card">
+        <h3>Perception Engine</h3>
+        <div class="stat-row"><span class="lbl">Frame Seq:</span><span id="frame-seq" class="val">0</span></div>
+        <div class="stat-row"><span class="lbl">Point Count:</span><span id="pts-count" class="val">0</span></div>
+        <div class="stat-row"><span class="lbl">Tracked MOT:</span><span id="mot-count" class="val">0</span></div>
+        <div class="stat-row"><span class="lbl">TSDF Active:</span><span id="tsdf-blocks" class="val">Active</span></div>
+      </div>
+    </aside>
+
+    <aside class="hud-panel right">
+      <div class="card">
+        <h3>View Controls</h3>
+        <label><input type="checkbox" id="chk-grid" checked> Spatial Ground Grid</label>
+        <label><input type="checkbox" id="chk-traj" checked> Planned Trajectory</label>
+        <label><input type="checkbox" id="chk-bbox" checked> 3D Bounding Boxes</label>
+        <label><input type="checkbox" id="chk-voxels" checked> TSDF Surface Slices</label>
+      </div>
+
+      <div class="card">
+        <h3>Performance Telemetry</h3>
+        <div class="stat-row"><span class="lbl">Render FPS:</span><span id="fps" class="val">60</span></div>
+        <div class="stat-row"><span class="lbl">Latency:</span><span id="latency" class="val">< 1 ms</span></div>
+        <div class="stat-row"><span class="lbl">ESKF Rate:</span><span class="val">200 Hz</span></div>
+      </div>
+    </aside>
+
+    <footer class="hud-footer">
+      <span>Drag mouse to rotate. Scroll to zoom. Right-click to pan.</span>
+    </footer>
+  </div>
+
+  <script src="/js/visualizer.js"></script>
+  <script src="/js/ws_client.js"></script>
+</body>
+</html>
