@@ -1,0 +1,62 @@
+name: Pelorus Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (macOS ARM64 / Ubuntu x86_64)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-14, ubuntu-22.04]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Odin Compiler (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install odin
+
+      - name: Setup Odin Compiler (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang llvm
+          git clone https://github.com/odin-lang/Odin /tmp/odin
+          cd /tmp/odin && make && sudo cp odin /usr/local/bin/
+
+      - name: Verify Odin Toolchain
+        run: |
+          odin version
+
+      - name: Run Test Suite
+        run: |
+          mkdir -p tests
+          odin test tests -out:tests/test_runner.bin
+
+      - name: Build Core Executable and Benchmarks
+        run: |
+          mkdir -p bin lib
+          odin build src -out:bin/pelorus
+          odin build bench -out:bin/pelorus_bench
+          odin build src/c_api -build-mode:shared -out:lib/libpelorus.dylib
+
+      - name: Execute Micro and Macro Benchmarks
+        run: |
+          ./bin/pelorus_bench
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Dependencies & Verify SDK
+        run: |
+          python -m pip install --upgrade pip numpy
+          pip install -e python/
+          python -c "import pelorus; print('Python bindings online:', pelorus.get_version())"
